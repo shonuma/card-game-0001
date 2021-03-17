@@ -1,5 +1,7 @@
 from flask import Flask, render_template
 from flask_sockets import Sockets
+from libs.redis_clieent import RedisClient
+import logging
 
 
 app = Flask(__name__)
@@ -8,6 +10,8 @@ sockets = Sockets(app)
 
 @sockets.route('/chat')
 def chat_socket(ws):
+    # client = RedisClient('global')
+
     while not ws.closed:
         message = ws.receive()
         if message is None:  # message is "None" if the client has closed.
@@ -27,6 +31,9 @@ def index():
 
 
 if __name__ == '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
     print("""
 This can not be run directly because the Flask development server does not
 support web sockets. Instead, use gunicorn:
