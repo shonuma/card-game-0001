@@ -1,0 +1,6 @@
+Flask
+Flask-Sockets
+gunicorn
+gevent
+gevent-websocket
+requests
