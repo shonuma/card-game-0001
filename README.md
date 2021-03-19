@@ -1,5 +1,7 @@
 # README
 
+## ゲームの流れ
+
 ## server
 
 
@@ -15,11 +17,18 @@
 
 # memo
 
-```
-bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8): No such file or directoryの解消
-```
+## bash: warning: setlocale: LC_CTYPE: cannot change locale (UTF-8): No such file or directoryの解消
 
 - https://qiita.com/Kaisyou/items/9c2c5f5e1b28c24e91b7
+
+## tailwindcss without PostCSS
+
+```
+npx tailwindcss-cli@latest build -o tailwind.css
+```
+
+
+- https://tailwindcss.com/docs/installation#using-tailwind-without-post-css
 
 
 ## 開発環境構築
