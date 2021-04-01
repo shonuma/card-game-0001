@@ -2,15 +2,17 @@ from flask import Flask, render_template
 from flask_sockets import Sockets
 from libs.redis_client import RedisClient
 import logging
-from models.game import GameModel
+from models.game import Game
 import json
+import sys
 
 
 app = Flask(__name__)
 sockets = Sockets(app)
 
-
-client = RedisClient('global')
+# gunicorn_logger = logging.getLogger('gunicorn.info')
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.INFO)
 
 @sockets.route('/message')
 def chat_global(ws):
@@ -29,15 +31,22 @@ def chat_global(ws):
 # [END gae_flex_websockets_app]
 
 
+def log(message):
+    app.logger.info(message)
+
 @sockets.route('/message/<room_id>')
 def chat_in_room(ws, room_id):
+    db = RedisClient('global')
     while not ws.closed:
         message = ws.receive()
+        log(
+            ('Got message: {}'.format(str(message)))
+        )
         if message is None:  # message is "None" if the client has closed.
             continue
-        if message == 'PING':
+        if not message or message == 'PING':
             continue
-        model = GameModel(client, room_id)
+        model = Game(db, room_id)
         parameter = {}
         try:
             parameter = json.loads(message)
@@ -84,9 +93,6 @@ def room(room_id):
 
 
 if __name__ == '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
     print("""
 This can not be run directly because the Flask development server does not
 support web sockets. Instead, use gunicorn:

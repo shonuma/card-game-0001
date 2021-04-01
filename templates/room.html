@@ -208,6 +208,7 @@
             websocket.onopen = function () {
                 isConnected = true
                 log('Connected');
+                websocket.send('PING');
             };
 
             websocket.onclose = function () {

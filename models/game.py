@@ -1,6 +1,6 @@
 
 
-class Game:
+class Game(object):
     def __init__(self, client, room_id):
         self.client = client
         self.players = []
